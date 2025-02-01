@@ -8,9 +8,9 @@ from apps.users.models import CustomUser
 
 
 class CustomAdminSite(admin.AdminSite):
-    site_header = "Greenloop Admin Panel"
-    site_title = "Greenloop"
-    index_title = "Selamat Datang di Greenloop Admin"
+    site_header = "Revosistem Admin Panel"
+    site_title = "Revosistem"
+    index_title = "Selamat Datang di Revosistem Admin"
 
     # filter model di sidebar
     def get_app_list(self, request):
@@ -46,7 +46,7 @@ class CustomAdminSite(admin.AdminSite):
         return filtered_apps
 
 
-admin_site = CustomAdminSite(name='greenloop_admin')
+admin_site = CustomAdminSite(name='revosistem_admin')
 
 # register all model 
 admin_site.register(CustomUser, UserAdmin)
