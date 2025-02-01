@@ -1,0 +1,9 @@
+asgiref==3.8.1
+Django==5.1.5
+django-cleanup==9.0.0
+django-decouple==2.1
+django-unfold==0.46.0
+pillow==11.1.0
+PyMySQL==1.1.1
+sqlparse==0.5.3
+tzdata==2025.1
