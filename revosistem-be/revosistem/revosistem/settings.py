@@ -141,6 +141,11 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+def is_group_member(request, group_name):
+    """ Helper untuk mengecek apakah user adalah anggota dari group tertentu """
+    return request.user.groups.filter(name=group_name).exists()
+
+
 UNFOLD = {
     "SITE_TITLE": "Revosistem",
     "SITE_HEADER": "Revosistem Admin",
@@ -188,9 +193,9 @@ UNFOLD = {
                 "items": [
                     {
                         "title": _("Dashboard"),
-                        "icon": "dashboard", 
+                        "icon": "dashboard",
                         "link": reverse_lazy("admin:index"),
-                        "permission": lambda request: request.user.is_superuser,
+                        "permission": lambda request: request.user.is_superuser,  # Hanya superuser yang bisa akses
                     },
                 ],
             },
@@ -201,18 +206,21 @@ UNFOLD = {
                 "items": [
                     {
                         "title": _("Pengguna"),
-                        "icon": "person",  
+                        "icon": "person",
                         "link": reverse_lazy("admin:users_customuser_changelist"),
+                        "permission": lambda request: is_group_member(request, 'admin') or is_group_member(request, 'petugas'),
                     },
                     {
                         "title": _("Item Pengguna"),
-                        "icon": "inventory", 
+                        "icon": "inventory",
                         "link": reverse_lazy("admin:users_useritems_changelist"),
+                        "permission": lambda request: is_group_member(request, 'admin') or is_group_member(request, 'petugas'),
                     },
                     {
                         "title": _("Role"),
-                        "link": reverse_lazy("admin:auth_group_changelist"),
                         "icon": "group",
+                        "link": reverse_lazy("admin:auth_group_changelist"),
+                        "permission": lambda request: request.user.is_superuser,
                     },
                 ],
             },
@@ -222,16 +230,18 @@ UNFOLD = {
                 "collapsible": True,
                 "items": [
                     {
-                        "title": _("Data sampah"),
-                        "icon": "delete",  
+                        "title": _("Data Sampah"),
+                        "icon": "delete",
                         "link": reverse_lazy("admin:trash_trash_changelist"),
+                        "permission": lambda request: is_group_member(request, 'petugas') or is_group_member(request, 'admin'),
                     },
                     {
                         "title": _("Catatan Sampah"),
-                        "icon": "restore",  
+                        "icon": "restore",
                         "link": reverse_lazy("admin:trash_trashrecord_changelist"),
+                        "permission": lambda request: is_group_member(request, 'petugas') or is_group_member(request, 'admin'),
                     }
-                ]
+                ],
             },
             {
                 "title": _("Marketplace"),
@@ -239,21 +249,24 @@ UNFOLD = {
                 "collapsible": True,
                 "items": [
                     {
-                        "title": _("Data barang"),
-                        "icon": "shopping_basket",  
+                        "title": _("Data Barang"),
+                        "icon": "shopping_basket",
                         "link": reverse_lazy("admin:marketplace_product_changelist"),
+                        "permission": lambda request: is_group_member(request, 'seller'),
                     },
                     {
-                        "title": _("Kategori barang"),
-                        "icon": "category",  
+                        "title": _("Kategori Barang"),
+                        "icon": "category",
                         "link": reverse_lazy("admin:marketplace_productcategory_changelist"),
+                        "permission": lambda request: is_group_member(request, 'seller'),
                     },
                     {
                         "title": _("Pesanan"),
-                        "icon": "local_shipping", 
+                        "icon": "local_shipping",
                         "link": reverse_lazy("admin:marketplace_order_changelist"),
-                    }
-                ]
+                        "permission": lambda request: is_group_member(request, 'seller'),
+                    },
+                ],
             },
             {
                 "title": _("Pembayaran"),
@@ -262,16 +275,19 @@ UNFOLD = {
                 "items": [
                     {
                         "title": _("Opsi Pembayaran"),
-                        "icon": "credit_card", 
+                        "icon": "credit_card",
                         "link": reverse_lazy("admin:payments_paymentoption_changelist"),
+                        "permission": lambda request: is_group_member(request, 'admin') or is_group_member(request, 'petugas'),
                     },
                     {
                         "title": _("Catatan Penukaran"),
-                        "icon": "attach_money", 
+                        "icon": "attach_money",
                         "link": reverse_lazy("admin:payments_swaprecord_changelist"),
-                    }
-                ]
+                        "permission": lambda request: is_group_member(request, 'admin') or is_group_member(request, 'petugas'),
+                    },
+                ],
             },
         ],
-    },
+    }
 }
+
