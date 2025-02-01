@@ -48,7 +48,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'greenloop.urls'
+ROOT_URLCONF = 'revosistem.urls'
 
 TEMPLATES = [
     {
@@ -66,7 +66,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'greenloop.wsgi.application'
+WSGI_APPLICATION = 'revosistem.wsgi.application'
 
 
 # Database
