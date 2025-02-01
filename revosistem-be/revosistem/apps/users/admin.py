@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.urls import reverse
+from django.utils.html import format_html
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from unfold.admin import ModelAdmin
 from apps.users.models import CustomUser, UserItems
@@ -15,10 +17,10 @@ class GroupAdmin(BaseGroupAdmin, ModelAdmin):
 
 @admin.register(CustomUser)
 class CustomUserAdmin(BaseUserAdmin, ModelAdmin):
-    list_display = ('username', 'email', 'membership', 'status')
+    list_display = ('username', 'email', 'membership', 'status', 'get_dashboard_link')
     list_filter = ('membership', 'status')
     search_fields = ('username', 'email')
-    
+
     form = UserChangeForm
     add_form = UserCreationForm
     change_password_form = AdminPasswordChangeForm
@@ -32,8 +34,12 @@ class CustomUserAdmin(BaseUserAdmin, ModelAdmin):
         }),
     ]
 
+    def get_dashboard_link(self, obj):
+        url = reverse('users_dashboard')
+        return format_html(f'<a href="{url}" target="_blank">Lihat Dashboard Analytics</a>')
+    get_dashboard_link.short_description = 'Dashboard Analytics'
+
 @admin.register(UserItems)
 class UserItemsAdmin(ModelAdmin):
     list_display = ('user', 'koin', 'total_penukaran_sampah', 'penarikan_uang')
     search_fields = ('user__username',)
-
