@@ -1,0 +1,51 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h1>Dashboard Analytics - Users</h1>
+
+<h3>Informasi Umum</h3>
+<ul>
+    <li>Total Pengguna: {{ total_users }}</li>
+    <li>Pengguna Aktif: {{ active_users }}</li>
+    <li>Pengguna Tidak Aktif: {{ inactive_users }}</li>
+    <li>Pengguna Online dalam 24 Jam: {{ online_users }}</li>
+</ul>
+
+<h3>Distribusi Membership</h3>
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Membership</th>
+            <th>Jumlah Pengguna</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for membership in membership_distribution %}
+        <tr>
+            <td>{{ membership.membership }}</td>
+            <td>{{ membership.count }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Top 5 Pengguna Paling Aktif Menukarkan Sampah ke Koin</h3>
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Nama Pengguna</th>
+            <th>Total Penukaran Sampah</th>
+            <th>Total Koin</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user_item in top_users_by_koin %}
+        <tr>
+            <td>{{ user_item.user.username }}</td>
+            <td>{{ user_item.total_penukaran_sampah }}</td>
+            <td>{{ user_item.koin }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
