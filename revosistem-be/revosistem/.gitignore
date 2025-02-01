@@ -1,3 +1,4 @@
 .env
 
 staticfiles
+revosistem/**/__pycache__/
