@@ -10,7 +10,6 @@ class CustomAdminSite(admin.AdminSite):
     site_title = "Revosistem"
     index_title = "Selamat Datang di Revosistem Admin"
 
-    # Konfigurasi model yang ditampilkan per role (group)
     ROLE_MODEL_ACCESS = {
         'seller': ['product', 'productcategory', 'order'],
         'admin': ['trash', 'trashrecord', 'paymentoption', 'swaprecord', 'customuser'],
@@ -20,20 +19,16 @@ class CustomAdminSite(admin.AdminSite):
     def get_app_list(self, request):
         app_list = super().get_app_list(request)
 
-        # Dapatkan role (group) user
         user_groups = set(group.name.lower() for group in request.user.groups.all())
 
-        # Tentukan model yang boleh ditampilkan berdasarkan group
         allowed_models = set()
         for group in user_groups:
             allowed_models.update(self.ROLE_MODEL_ACCESS.get(group, []))
 
-        # Filter app_list berdasarkan model yang diizinkan
         filtered_apps = []
         for app in app_list:
             new_models = [model for model in app['models'] if model['object_name'].lower() in allowed_models]
 
-            # Tambahkan app jika memiliki model yang sesuai
             if new_models:
                 filtered_apps.append({
                     'name': app['name'],
@@ -45,10 +40,8 @@ class CustomAdminSite(admin.AdminSite):
         return filtered_apps
 
 
-# Custom Admin Site Registration
 admin_site = CustomAdminSite(name='revosistem_admin')
 
-# Register semua model yang dibutuhkan
 admin_site.register(CustomUser, UserAdmin)
 admin_site.register(Product)
 admin_site.register(ProductCategory)
