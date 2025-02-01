@@ -1,40 +1,39 @@
 from django.contrib import admin
-from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 from apps.marketplace.models import Order, Product, ProductCategory
 from apps.payments.models import PaymentOption, SwapRecord
 from apps.trash.models import Trash, TrashRecord
 from apps.users.models import CustomUser
 
-
 class CustomAdminSite(admin.AdminSite):
     site_header = "Revosistem Admin Panel"
     site_title = "Revosistem"
     index_title = "Selamat Datang di Revosistem Admin"
 
-    # filter model di sidebar
+    # Konfigurasi model yang ditampilkan per role (group)
+    ROLE_MODEL_ACCESS = {
+        'seller': ['product', 'productcategory', 'order'],
+        'admin': ['trash', 'trashrecord', 'paymentoption', 'swaprecord', 'customuser'],
+        'petugas': ['trash', 'trashrecord', 'paymentoption', 'swaprecord', 'customuser'],
+    }
+
     def get_app_list(self, request):
         app_list = super().get_app_list(request)
 
-        # get group user
-        user_groups = set(group.name for group in request.user.groups.all())
+        # Dapatkan role (group) user
+        user_groups = set(group.name.lower() for group in request.user.groups.all())
 
-        # Filter model sesuai role (berdasarkan group)
+        # Tentukan model yang boleh ditampilkan berdasarkan group
+        allowed_models = set()
+        for group in user_groups:
+            allowed_models.update(self.ROLE_MODEL_ACCESS.get(group, []))
+
+        # Filter app_list berdasarkan model yang diizinkan
         filtered_apps = []
         for app in app_list:
-            new_models = []
-            for model in app['models']:
-                model_name = model['object_name'].lower()
+            new_models = [model for model in app['models'] if model['object_name'].lower() in allowed_models]
 
-                # Logic filtering model sesuai group
-                if 'seller' in user_groups:
-                    if model_name in ['product', 'productcategory', 'order']:
-                        new_models.append(model)
-                elif 'admin' in user_groups or 'petugas' in user_groups:
-                    if model_name in ['trash', 'trashrecord', 'paymentoption', 'swaprecord', 'customuser']:
-                        new_models.append(model)
-
-            # Tambahin aja app kalo punya model yang cocok
+            # Tambahkan app jika memiliki model yang sesuai
             if new_models:
                 filtered_apps.append({
                     'name': app['name'],
@@ -46,9 +45,10 @@ class CustomAdminSite(admin.AdminSite):
         return filtered_apps
 
 
+# Custom Admin Site Registration
 admin_site = CustomAdminSite(name='revosistem_admin')
 
-# register all model 
+# Register semua model yang dibutuhkan
 admin_site.register(CustomUser, UserAdmin)
 admin_site.register(Product)
 admin_site.register(ProductCategory)
