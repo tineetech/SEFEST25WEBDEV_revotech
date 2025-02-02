@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
-import Home from './App'
-// import N404 from './pages/N404'
+import Home from './pages/Home'
+import N404 from './pages/N404'
 
 const PrivateRoute = ({element}) => {
   const cekLogin = sessionStorage.getItem('isLogin')
@@ -20,7 +20,7 @@ const RouterApp = () => {
     <Router>
         <Routes>
             <Route path='/' element={<Home/>} />
-            <Route path='*' element={<Home/>} />
+            <Route path='*' element={<N404/>} />
         </Routes>
     </Router>
   )
