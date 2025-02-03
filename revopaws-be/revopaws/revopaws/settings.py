@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'apps.revoshop',
+    'apps.artikel',
     'apps.payments',
     'apps.users',
 ]
@@ -127,7 +128,7 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-MEDIA_URL = '/media/'
+MEDIA_URL = '/media/'   
 MEDIA_ROOT = BASE_DIR / 'media/'
 
 # Static files (CSS, JavaScript, Images)
@@ -219,6 +220,25 @@ UNFOLD = {
                         "title": _("Pesanan"),
                         "icon": "local_shipping",
                         "link": reverse_lazy("admin:revoshop_productcategory_changelist"),
+                        # "permission": lambda request: is_group_member(request, 'seller'),
+                    },
+                ],
+            },
+            {
+                "title": _("Artikel"),
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Data Artikel"),
+                        "icon": "shopping_basket",
+                        "link": reverse_lazy("admin:artikel_artikel_changelist"),
+                        # "permission": lambda request: is_group_member(request, 'seller'),
+                    },
+                    {
+                        "title": _("Kategori Artikel"),
+                        "icon": "category",
+                        "link": reverse_lazy("admin:artikel_artikelcategory_changelist"),
                         # "permission": lambda request: is_group_member(request, 'seller'),
                     },
                 ],
