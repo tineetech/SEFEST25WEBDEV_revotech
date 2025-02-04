@@ -1,32 +1,72 @@
-from django.shortcuts import render
-from django.contrib.auth.models import User
-from apps.users.models import CustomUser
-from django.db.models import Count, Sum
-from datetime import timedelta
-from django.utils.timezone import now
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import LoginSerializer, UserSerializer, RegisterSerializer
 
-def users_dashboard(request):
-    # Statistik pengguna
-    total_users = CustomUser.objects.count()
-    active_users = CustomUser.objects.filter(status=True).count()
-    inactive_users = CustomUser.objects.filter(status=False).count()
-
-    # Pengguna online (last login dalam 24 jam terakhir)
-    online_users = CustomUser.objects.filter(last_login__gte=now() - timedelta(hours=24)).count()
-
-    # Distribusi membership
-    membership_distribution = CustomUser.objects.values('membership').annotate(count=Count('membership'))
-
-    # Pengguna paling aktif menukarkan sampah ke koin
-    # top_users_by_koin = UserItems.objects.order_by('-total_penukaran_sampah')[:5]
-
-    context = {
-        'total_users': total_users,
-        'active_users': active_users,
-        'inactive_users': inactive_users,
-        'online_users': online_users,
-        'membership_distribution': membership_distribution,
-        # 'top_users_by_koin': top_users_by_koin,
-    }
+# login user biasa
+class UserLoginView(APIView):
+    permission_classes = [AllowAny]
     
-    return render(request, 'users/dashboard.html', context)
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data
+            
+            # Generate token
+            refresh = RefreshToken.for_user(user)
+            
+            # Serialize user data
+            user_serializer = UserSerializer(user)
+            
+            return Response({
+                'status': 'success',
+                'message': 'Login successful',
+                'data': {
+                    'user': user_serializer.data,
+                    'tokens': {
+                        'refresh': str(refresh),
+                        'access': str(refresh.access_token),
+                    }
+                }
+            }, status=status.HTTP_200_OK)
+            
+        return Response({
+            'status': 'error',
+            'message': 'Login failed',
+            'errors': serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+# register user biasa
+class UserRegisterView(APIView):
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            
+            # Generate token
+            refresh = RefreshToken.for_user(user)
+            
+            # Serialize user data
+            user_serializer = UserSerializer(user)
+            
+            return Response({
+                'status': 'success',
+                'message': 'Registration successful',
+                'data': {
+                    'user': user_serializer.data,
+                    'tokens': {
+                        'refresh': str(refresh),
+                        'access': str(refresh.access_token),
+                    }
+                }
+            }, status=status.HTTP_201_CREATED)
+        
+        return Response({
+            'status': 'error',
+            'message': 'Registration failed',
+            'errors': serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
