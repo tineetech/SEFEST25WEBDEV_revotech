@@ -22,7 +22,7 @@ class UserProfileAdmin(ModelAdmin):
 
 @admin.register(Doctor)
 class DoctorAdmin(ModelAdmin):
-    list_display = ['name', 'specialization', 'str_number', 'verification_status']
+    list_display = ['name', 'id', 'specialization', 'str_number', 'verification_status']
     list_filter = ['verification_status']
     actions = ['approve_doctors', 'reject_doctors']
 

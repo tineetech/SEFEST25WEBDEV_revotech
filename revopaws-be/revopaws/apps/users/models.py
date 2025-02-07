@@ -1,6 +1,14 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
+
+
+def user_directory_path(instance, filename):
+    return f'user_{instance.user.id}/{filename}'
+
+def doctor_directory_path(instance, filename):
+    return f'doctor_{instance.user.id}/{filename}'
 
 # Custom User
 class User(AbstractUser):
@@ -25,9 +33,9 @@ class User(AbstractUser):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     birthday = models.CharField(max_length=255, blank=True, null=True)
-    phone_number = models.CharField(max_length=20)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
-    profile_picture = models.CharField(max_length=255, blank=True, null=True)
+    profile_picture = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
 
     def __str__(self):
         return f"Profile of {self.user.username}"
@@ -37,7 +45,7 @@ class UserProfile(models.Model):
 class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='doctor_profile')
     name = models.CharField(max_length=255)
-    photo_profile = models.TextField(blank=True, null=True)
+    photo_profile = models.ImageField(upload_to=doctor_directory_path, null=True, blank=True)
     str_number = models.CharField(max_length=50)
     chat_fee = models.DecimalField(max_digits=10, decimal_places=2)
     video_fee = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
