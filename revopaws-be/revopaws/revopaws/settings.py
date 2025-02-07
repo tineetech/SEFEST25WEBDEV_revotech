@@ -103,12 +103,16 @@ WSGI_APPLICATION = 'revopaws.wsgi.application'
 
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': config('DB_NAME', default='property_db'),
-#         'USER': config('DB_USER', default='root'),
-#         'PASSWORD': '',
-#         'HOST': config('DB_HOST', default='127.0.0.1'),
-#         'PORT': config('DB_PORT', default='3306'),
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': config('DB_NAME'),
+#         'USER': config('DB_USER'),
+#         'PASSWORD': config('DB_PASSWORD'),
+#         'HOST': config('DB_HOST'),
+#         'PORT': config('DB_PORT'),
+#         'OPTIONS': {
+#             'client_encoding': 'UTF8', 
+#             'sslmode': config('DB_SSLMODE'),  # Pastikan SSL diaktifkan
+#         }
 #     }
 # }
 

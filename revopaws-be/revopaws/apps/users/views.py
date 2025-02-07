@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import LoginSerializer, UserSerializer, RegisterSerializer
+from .serializers import LoginSerializer, UserSerializer, RegisterSerializer, DoctorRegisterSerializer, DoctorLoginSerializer
 
 # login user biasa
 class UserLoginView(APIView):
@@ -68,5 +68,73 @@ class UserRegisterView(APIView):
         return Response({
             'status': 'error',
             'message': 'Registration failed',
+            'errors': serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+# register doctor
+class DoctorRegisterView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = DoctorRegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            
+            return Response({
+                'status': 'success',
+                'message': 'Registration successful. Please wait for admin verification.',
+                'data': {
+                    'username': user.username,
+                    'email': user.email,
+                    'verification_status': 'pending'
+                }
+            }, status=status.HTTP_201_CREATED)
+        
+        return Response({
+            'status': 'error',
+            'message': 'Registration failed',
+            'errors': serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+# login doctor
+class DoctorLoginView(APIView):
+    permission_classes = [AllowAny]
+    
+
+    def post(self, request):
+        serializer = DoctorLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data
+            
+            # Generate token
+            refresh = RefreshToken.for_user(user)
+            
+            # Get doctor profile
+            doctor = user.doctor_profile
+            
+            return Response({
+                'status': 'success',
+                'message': 'Login successful',
+                'data': {
+                    'user': {
+                        'id': user.id,
+                        'username': user.username,
+                        'email': user.email,
+                        'doctor_profile': {
+                            'name': doctor.name,
+                            'specialization': doctor.specialization,
+                            'verification_status': doctor.verification_status
+                        }
+                    },
+                    'tokens': {
+                        'refresh': str(refresh),
+                        'access': str(refresh.access_token),
+                    }
+                }
+            }, status=status.HTTP_200_OK)
+            
+        return Response({
+            'status': 'error',
+            'message': 'Login failed',
             'errors': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
