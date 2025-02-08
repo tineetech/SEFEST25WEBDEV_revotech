@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Swal from 'sweetalert2'
 import Home from './pages/Home'
 import N404 from './pages/N404'
+import ChatDokter from './pages/ChatDokter'
 
 const PrivateRoute = ({element}) => {
   const cekLogin = sessionStorage.getItem('isLogin')
@@ -20,6 +21,8 @@ const RouterApp = () => {
     <Router>
         <Routes>
             <Route path='/' element={<Home/>} />
+            <Route path='/konsultasi' element={<ChatDokter/>} />
+            <Route path='/chat-dokter' element={<ChatDokter/>} />
             <Route path='*' element={<N404/>} />
         </Routes>
     </Router>
