@@ -4,10 +4,12 @@ from .views import (
     ConsultationPaymentView,
     ConsultationStartView,
     ConsultationEndView,
-    DoctorReviewCreateView
+    DoctorReviewCreateView,
+    FileUploadView
 )
 
 urlpatterns = [
+    path("consultations/upload-file/", FileUploadView.as_view(), name="file-upload"),
     path('consultations/book/', ConsultationBookingView.as_view(), name='consultation-booking'),
     path('consultations/<int:consultation_id>/payment/', ConsultationPaymentView.as_view(), name='consultation-payment'),
     path('consultations/<int:consultation_id>/start/', ConsultationStartView.as_view(), name='consultation-start'),
