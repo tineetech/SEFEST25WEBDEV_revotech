@@ -4,6 +4,7 @@ from apps.users.serializers import UserSerializer, DoctorProfileSerializer
 from apps.users.models import Doctor
 from apps.chatrealtime.models import ChatRealtime
 
+
 class ConsultationRoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConsultationRoom

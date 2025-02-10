@@ -4,6 +4,12 @@ import Swal from 'sweetalert2'
 import Home from './pages/Home'
 import N404 from './pages/N404'
 import ChatDokter from './pages/ChatDokter'
+import Consultation from './pages/Consultation'
+import Room from './pages/Room'
+import Chats from './pages/Chats'
+import RoomDokter from './pages/RoomDokter'
+import ChatsDokter from './pages/ChatsDokter'
+import CheckoutTempo from './pages/CheckoutTempo'
 
 const PrivateRoute = ({element}) => {
   const cekLogin = sessionStorage.getItem('isLogin')
@@ -21,8 +27,13 @@ const RouterApp = () => {
     <Router>
         <Routes>
             <Route path='/' element={<Home/>} />
-            <Route path='/konsultasi' element={<ChatDokter/>} />
+            <Route path='/konsultasi' element={<Consultation/>} />
+            <Route path='/room' element={<Room/>} />
+            <Route path='/room-dokter' element={<RoomDokter/>} />
+            <Route path='/room/chat/:id' element={<Chats/>} />
+            <Route path='/room/chat-dokter/:id' element={<ChatsDokter/>} />
             <Route path='/chat-dokter' element={<ChatDokter/>} />
+            <Route path='/checkout' element={<CheckoutTempo/>} />
             <Route path='*' element={<N404/>} />
         </Routes>
     </Router>

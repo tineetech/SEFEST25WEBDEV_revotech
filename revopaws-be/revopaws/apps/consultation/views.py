@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.views import APIView
+from django.conf import settings
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
@@ -8,6 +9,33 @@ from .serializers import ConsultationSerializer, DoctorReviewSerializer
 from apps.users.models import Doctor
 from django.utils import timezone
 import uuid
+import os
+from rest_framework.parsers import MultiPartParser, FormParser
+
+class FileUploadView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, *args, **kwargs):
+        if "file" not in request.FILES:
+            return Response({"error": "No file uploaded"}, status=400)
+
+        uploaded_file = request.FILES["file"]
+        room_id = request.data.get("room_id")  # Ambil parameter tambahan
+        chat_id = request.data.get("chat_id")  # Ambil parameter tambahan
+
+        # Buat folder berdasarkan chat_id atau room_id 
+        upload_dir = os.path.join(settings.MEDIA_ROOT, "chats", f"room_{room_id}", f"chat_{chat_id}")
+        os.makedirs(upload_dir, exist_ok=True)
+        
+        # Simpan file
+        file_path = os.path.join(upload_dir, f"File_chat_{uploaded_file.name}")
+        with open(file_path, "wb+") as destination:
+            for chunk in uploaded_file.chunks():
+                destination.write(chunk)
+
+        file_url = request.build_absolute_uri(settings.MEDIA_URL + f"chats/room_{room_id}/chat_{chat_id}/File_chat_{uploaded_file.name}")
+
+        return Response({"file_url": file_url, "message": "File uploaded successfully"}, status=201)
 
 class ConsultationListCreateView(APIView):
     permission_classes = [IsAuthenticated]
