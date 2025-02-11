@@ -34,6 +34,8 @@
 - 3D Effect
 - Cursor follow
 - Chatbot Ai with gemini
+- Chat dengan Dokter secara realtime
+- Payment gateaway 
 - Terintegrasi CMS (content dapat diubah langsung melalui website di page dashboard/cms)
 - Login, Register, Logout System With JWT
 - Panel admin pengelolaan aplikasi
