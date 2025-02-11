@@ -30,6 +30,7 @@
 - Responsive, Modern, Paralax design
 - 3D Effect
 - Cursor follow
+- Chatbot Ai with gemini
 - Terintegrasi CMS (content dapat diubah langsung melalui website di page dashboard/cms)
 - Login, Register, Logout System With JWT
 - Panel admin pengelolaan aplikasi
