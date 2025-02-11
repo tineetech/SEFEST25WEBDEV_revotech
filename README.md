@@ -9,6 +9,9 @@
 - development (sedang dalam pengerjaan, frontend 40% backend 70%)
 - justdev (branch justine ini nanti akan di branch ke development)
 
+### Note
+- Seluruh design dalam frontend maupun system backend bersifat tidak menetap alias akan ada perubahan jika nantinya diperlukan untuk memaksimalkan dan meningkatkan kualitas karya yang kami buat.
+
 ### Tech used ⚙
 - Vite
 - React JS
